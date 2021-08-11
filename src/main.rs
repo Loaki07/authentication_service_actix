@@ -17,6 +17,8 @@ async fn main() -> Result<()> {
 
     let pool = config.db_pool().await.expect("Database configuration");
 
+    let crypto_service = config.crypto_service();
+
     info!(
         "Strating server at http:://{}:{}/",
         config.host, config.port
@@ -26,6 +28,7 @@ async fn main() -> Result<()> {
         App::new()
             .wrap(Logger::default())
             .data(pool.clone())
+            .data(crypto_service.clone())
             .configure(app_config)
     })
     .bind(format!("{}:{}", config.host, config.port))?
