@@ -1,14 +1,17 @@
+use std::time::Duration;
 use color_eyre::Result;
 use dotenv::dotenv;
 use eyre::WrapErr;
 use serde::Deserialize;
 use tracing::{info, instrument};
 use tracing_subscriber::EnvFilter;
+use sqlx::postgres::PgPool;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub host: String,
     pub port: i32,
+    pub database_url: String
 }
 
 impl Config {
@@ -36,5 +39,15 @@ impl Config {
         // to convert the config to a instance of the Config struct
         cfg.try_into()
             .context("loading configuration from environment")
+    }
+
+    pub async fn db_pool(&self) -> Result<PgPool> {
+        info!("Creating database connection pool");
+
+        PgPool::builder()
+        .connect_timeout(Duration::from_secs(30))
+        .build(&self.database_url)
+        .await
+        .context("creating database connection pool")
     }
 }
