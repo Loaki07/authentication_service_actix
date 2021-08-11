@@ -1,5 +1,9 @@
+#[macro_use]
+extern crate validator_derive;
+
 mod config;
 mod handlers;
+mod models;
 
 use crate::handlers::app_config;
 use crate::config::Config;
