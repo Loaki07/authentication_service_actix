@@ -4,6 +4,7 @@ extern crate validator_derive;
 mod config;
 mod handlers;
 mod models;
+mod db;
 
 use crate::config::Config;
 use crate::handlers::app_config;
